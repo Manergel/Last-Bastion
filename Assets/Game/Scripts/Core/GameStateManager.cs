@@ -1,59 +1,28 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance;
 
-    public GamePhase CurrentPhase;
-    
+    public GamePhase CurrentPhase { get; private set; }
+
     public event Action<GamePhase> OnPhaseChanged;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
+        if (Instance != null)
         {
             Destroy(gameObject);
             return;
         }
+
+        Instance = this;
     }
 
     private void Start()
     {
         SwitchPhase(GamePhase.Base);
-    }
-    
-    private void Update()
-    {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame)
-        {
-            SwitchPhase(GamePhase.Base);
-        }
-
-        if (Keyboard.current.digit2Key.wasPressedThisFrame)
-        {
-            SwitchPhase(GamePhase.Preparation);
-        }
-
-        if (Keyboard.current.digit3Key.wasPressedThisFrame)
-        {
-            SwitchPhase(GamePhase.Expedition);
-        }
-
-        if (Keyboard.current.digit4Key.wasPressedThisFrame)
-        {
-            SwitchPhase(GamePhase.Combat);
-        }
-
-        if (Keyboard.current.digit5Key.wasPressedThisFrame)
-        {
-            SwitchPhase(GamePhase.Result);
-        }
     }
 
     public void SwitchPhase(GamePhase newPhase)
@@ -71,7 +40,7 @@ public class GameStateManager : MonoBehaviour
 
         OnPhaseChanged?.Invoke(CurrentPhase);
     }
-    
+
     private void EnterPhase(GamePhase phase)
     {
         switch (phase)
