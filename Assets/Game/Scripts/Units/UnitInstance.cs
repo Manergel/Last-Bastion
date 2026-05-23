@@ -9,5 +9,6 @@ public class UnitInstance : MonoBehaviour
     {
         isDead = true;
         Debug.Log($"{unitName} погиб навсегда.");
+        Destroy(gameObject);
     }
 }

@@ -24,7 +24,7 @@ public class TestController : MonoBehaviour
 
     void OnHireClicked()
     {
-        currentUnit = hireSystem.HireUnit();
+        UnitInstance unit = hireSystem.HireUnit();
     }
 
 

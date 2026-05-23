@@ -4,9 +4,17 @@ public class HireSystem : MonoBehaviour
 {
     // Массив имён — откуда берём случайное имя при найме
     private string[] names = { "Зора", "Карн", "Эйла", "Торвис", "Дэкс" };
+    
+    private const int HIRE_COST = 15;
 
     public UnitInstance HireUnit()
     {
+        if (!ResourceManager.Instance.SpendGold(HIRE_COST))
+        {
+            Debug.Log("Не хватает золота!");
+            return null;
+        }
+        
         // Создаём пустой объект в сцене — он будет "телом" юнита
         GameObject go = new GameObject();
 
@@ -18,7 +26,7 @@ public class HireSystem : MonoBehaviour
         
         RosterManager.Instance.AddUnit(unit);
 
-        Debug.Log($"Нанят: {unit.unitName}");
+        Debug.Log($"Нанят: {unit.unitName} за {HIRE_COST} золота.");
         return unit;
     }
 }

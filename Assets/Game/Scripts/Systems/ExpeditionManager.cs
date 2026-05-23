@@ -9,26 +9,34 @@ public class ExpeditionManager : MonoBehaviour
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
     }
+
+    // Считаем шанс — сюда позже придут бонусы снаряжения и штрафы усталости
+    public int CalcSuccessChance(UnitInstance unit)
+    {
+        int chance = 50; // базовый шанс
+        return Mathf.Clamp(chance, 5, 95); // минимум 5%, максимум 95%
+    }
+
     public void SendOnExpedition(UnitInstance unit)
     {
-        // Если юнит уже мёртв — игнорируем
         if (unit == null || unit.isDead) return;
 
         GameStateManager.Instance.SwitchPhase(GamePhase.Expedition);
 
-        // Бросаем монетку: больше 0.5 — выжил
-        bool survived = Random.value > 0.5f;
+        int chance = CalcSuccessChance(unit);
+        bool survived = Random.Range(0, 100) < chance;
 
         if (survived)
         {
-            Debug.Log($"{unit.unitName} вернулся.");
+            Debug.Log($"{unit.unitName} вернулся. (шанс был {chance}%)");
         }
         else
         {
+            Debug.Log($"{unit.unitName} погиб. (шанс был {chance}%)");
             RosterManager.Instance.RemoveUnit(unit);
             unit.Die();
         }
-        
+
         GameStateManager.Instance.SwitchPhase(GamePhase.Result);
     }
 }
