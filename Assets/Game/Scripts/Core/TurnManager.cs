@@ -22,7 +22,16 @@ public class TurnManager : MonoBehaviour
         foreach (UnitInstance unit in RosterManager.Instance.GetUnits())
         {
             unit.TickFatigue();
-            unit.TakeMoraleDamage(-5); // отрицательный урон = восстановление
+            unit.TakeMoraleDamage(-5);
+        }
+
+        CorruptionSystem.Instance.Tick(); // ← скверна тикает
+
+        // Проверяем не проиграл ли игрок
+        if (CorruptionSystem.Instance.IsGameOver())
+        {
+            Debug.Log("GAME OVER — все регионы захвачены скверной.");
+            GameStateManager.Instance.SwitchPhase(GamePhase.GameOver);
         }
 
         OnTurnEnded?.Invoke();

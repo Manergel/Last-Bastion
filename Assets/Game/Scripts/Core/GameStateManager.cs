@@ -9,9 +9,9 @@ public class GameStateManager : MonoBehaviour
 
     void Awake()
     {
-        // Если менеджер уже есть — уничтожаем дубликат
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+        CurrentPhase = GamePhase.Base;
     }
 
     public void SwitchPhase(GamePhase newPhase)

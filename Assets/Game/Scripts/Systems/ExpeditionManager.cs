@@ -26,7 +26,15 @@ public class ExpeditionManager : MonoBehaviour
         {
             Debug.Log($"{unit.unitName} вернулся. (шанс был {chance}%)");
             unit.SetFatigued(2);
-            ResourceManager.Instance.AddGold(20); // ← награда за экспедицию
+            ResourceManager.Instance.AddGold(20);
+
+            // Снижаем скверну в самом опасном регионе
+            RegionData dangerous = GetMostCorruptedRegion();
+            if (dangerous != null)
+            {
+                CorruptionSystem.Instance.ReduceCorruption(dangerous, 1);
+                Debug.Log($"Скверна в {dangerous.regionName} снижена.");
+            }
         }
         else
         {
@@ -55,5 +63,21 @@ public class ExpeditionManager : MonoBehaviour
             chance -= 15;
 
         return Mathf.Clamp(chance, 5, 95);
+    }
+    
+    RegionData GetMostCorruptedRegion()
+    {
+        RegionData result = null;
+        int max = -1;
+
+        foreach (RegionData r in CorruptionSystem.Instance.regions)
+        {
+            if (!r.isConquered && r.currentCorruption > max)
+            {
+                max = r.currentCorruption;
+                result = r;
+            }
+        }
+        return result;
     }
 }
