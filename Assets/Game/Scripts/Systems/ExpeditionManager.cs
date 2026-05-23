@@ -10,16 +10,12 @@ public class ExpeditionManager : MonoBehaviour
         Instance = this;
     }
 
-    // Считаем шанс — сюда позже придут бонусы снаряжения и штрафы усталости
-    public int CalcSuccessChance(UnitInstance unit)
-    {
-        int chance = 50; // базовый шанс
-        return Mathf.Clamp(chance, 5, 95); // минимум 5%, максимум 95%
-    }
-
     public void SendOnExpedition(UnitInstance unit)
     {
         if (unit == null || unit.isDead) return;
+
+        // Проверяем можно ли идти
+        if (!unit.CanGoOnExpedition()) return;
 
         GameStateManager.Instance.SwitchPhase(GamePhase.Expedition);
 
@@ -29,14 +25,35 @@ public class ExpeditionManager : MonoBehaviour
         if (survived)
         {
             Debug.Log($"{unit.unitName} вернулся. (шанс был {chance}%)");
+            unit.SetFatigued(2);
+            ResourceManager.Instance.AddGold(20); // ← награда за экспедицию
         }
         else
         {
             Debug.Log($"{unit.unitName} погиб. (шанс был {chance}%)");
+
+            // Мораль падает у всех выживших
+            foreach (UnitInstance survivor in RosterManager.Instance.GetUnits())
+            {
+                if (survivor != unit)
+                    survivor.TakeMoraleDamage(10);
+            }
+
             RosterManager.Instance.RemoveUnit(unit);
             unit.Die();
         }
 
         GameStateManager.Instance.SwitchPhase(GamePhase.Result);
+    }
+
+    public int CalcSuccessChance(UnitInstance unit)
+    {
+        int chance = 70;
+
+        // Штраф за низкую мораль
+        if (unit.currentMorale < 50)
+            chance -= 15;
+
+        return Mathf.Clamp(chance, 5, 95);
     }
 }
