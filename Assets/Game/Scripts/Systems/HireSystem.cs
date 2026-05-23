@@ -15,6 +15,8 @@ public class HireSystem : MonoBehaviour
 
         // Даём случайное имя из массива
         unit.unitName = names[Random.Range(0, names.Length)];
+        
+        RosterManager.Instance.AddUnit(unit);
 
         Debug.Log($"Нанят: {unit.unitName}");
         return unit;

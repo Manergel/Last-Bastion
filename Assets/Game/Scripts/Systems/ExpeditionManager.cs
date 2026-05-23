@@ -2,6 +2,13 @@ using UnityEngine;
 
 public class ExpeditionManager : MonoBehaviour
 {
+    public static ExpeditionManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
+    }
     public void SendOnExpedition(UnitInstance unit)
     {
         // Если юнит уже мёртв — игнорируем
@@ -15,12 +22,13 @@ public class ExpeditionManager : MonoBehaviour
         if (survived)
         {
             Debug.Log($"{unit.unitName} вернулся.");
-            GameStateManager.Instance.SwitchPhase(GamePhase.Result);
         }
         else
         {
+            RosterManager.Instance.RemoveUnit(unit);
             unit.Die();
-            GameStateManager.Instance.SwitchPhase(GamePhase.Result);
         }
+        
+        GameStateManager.Instance.SwitchPhase(GamePhase.Result);
     }
 }

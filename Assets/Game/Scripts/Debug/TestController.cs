@@ -15,10 +15,11 @@ public class TestController : MonoBehaviour
     {
         hireSystem = GetComponent<HireSystem>();
         expeditionManager = GetComponent<ExpeditionManager>();
+    
+        Debug.Log($"HireSystem: {hireSystem}, Expedition: {expeditionManager}");
+        
 
-        // Вместо клавиш — нажатие кнопок на экране
         hireButton.onClick.AddListener(OnHireClicked);
-        sendButton.onClick.AddListener(OnSendClicked);
     }
 
     void OnHireClicked()
@@ -26,11 +27,5 @@ public class TestController : MonoBehaviour
         currentUnit = hireSystem.HireUnit();
     }
 
-    void OnSendClicked()
-    {
-        if (currentUnit != null)
-            expeditionManager.SendOnExpedition(currentUnit);
-        else
-            Debug.Log("Сначала найми юнита");
-    }
+
 }
