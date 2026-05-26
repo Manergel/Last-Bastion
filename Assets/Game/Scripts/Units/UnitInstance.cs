@@ -37,7 +37,11 @@ public class UnitInstance : MonoBehaviour
     {
         if (!isFatigued) return;
 
-        fatigueTurnsLeft--;
+        // Лазарет ускоряет восстановление
+        int tickAmount = BuildingSystem.Instance != null &&
+                         BuildingSystem.Instance.IsBuilt(BuildingType.Infirmary) ? 2 : 1;
+
+        fatigueTurnsLeft -= tickAmount;
 
         if (fatigueTurnsLeft <= 0)
         {

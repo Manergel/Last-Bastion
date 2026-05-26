@@ -21,8 +21,11 @@ public class CorruptionSystem : MonoBehaviour
     // Вызывается из TurnManager каждый ход
     public void Tick()
     {
-        // Каждые 3 хода скверна растёт в случайном незахваченном регионе
-        if (TurnManager.Instance.CurrentTurn % 3 != 0) return;
+        // Башня добавляет +1 ход между тиками скверны
+        int interval = BuildingSystem.Instance != null &&
+                       BuildingSystem.Instance.IsBuilt(BuildingType.Watchtower) ? 4 : 3;
+
+        if (TurnManager.Instance.CurrentTurn % interval != 0) return;
 
         RegionData target = GetRandomActiveRegion();
         if (target == null) return;

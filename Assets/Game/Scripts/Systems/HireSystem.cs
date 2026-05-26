@@ -2,10 +2,11 @@ using UnityEngine;
 
 public class HireSystem : MonoBehaviour
 {
-    // Массив имён — откуда берём случайное имя при найме
-    private string[] names = { "Зора", "Карн", "Эйла", "Торвис", "Дэкс" };
-    
     private const int HIRE_COST = 15;
+    
+    // Массив имён — откуда берём случайное имя при найме
+    private string[] baseNames = { "Зора", "Карн", "Эйла", "Торвис", "Дэкс" };
+    private string[] extraNames = { "Рейна", "Вольт", "Сера", "Брик", "Нэйл", "Астра" };
 
     public UnitInstance HireUnit()
     {
@@ -14,18 +15,17 @@ public class HireSystem : MonoBehaviour
             Debug.Log("Не хватает золота!");
             return null;
         }
-        
-        // Создаём пустой объект в сцене — он будет "телом" юнита
+
+        // С таверной — выбираем из расширенного пула
+        string[] pool = BuildingSystem.Instance != null &&
+                        BuildingSystem.Instance.IsBuilt(BuildingType.Tavern)
+            ? extraNames : baseNames;
+
         GameObject go = new GameObject();
-
-        // Добавляем компонент UnitInstance на этот объект
         UnitInstance unit = go.AddComponent<UnitInstance>();
+        unit.unitName = pool[Random.Range(0, pool.Length)];
 
-        // Даём случайное имя из массива
-        unit.unitName = names[Random.Range(0, names.Length)];
-        
         RosterManager.Instance.AddUnit(unit);
-
         Debug.Log($"Нанят: {unit.unitName} за {HIRE_COST} золота.");
         return unit;
     }
