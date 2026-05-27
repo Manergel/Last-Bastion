@@ -3,6 +3,9 @@ using UnityEngine;
 public class ExpeditionManager : MonoBehaviour
 {
     public static ExpeditionManager Instance { get; private set; }
+    
+    public System.Collections.Generic.List<UnitInstance> currentSquad 
+        = new System.Collections.Generic.List<UnitInstance>();
 
     void Awake()
     {
@@ -79,5 +82,13 @@ public class ExpeditionManager : MonoBehaviour
             }
         }
         return result;
+    }
+    
+    public void StartExpedition(System.Collections.Generic.List<UnitInstance> squad)
+    {
+        // Сохраняем отряд для экспедиции
+        currentSquad = new System.Collections.Generic.List<UnitInstance>(squad);
+        GameStateManager.Instance.SwitchPhase(GamePhase.Expedition);
+        Debug.Log($"Экспедиция началась. Отряд: {currentSquad.Count} юнитов.");
     }
 }

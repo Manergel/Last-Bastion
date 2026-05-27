@@ -1,39 +1,57 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UnitCardUI : MonoBehaviour
 {
+    [Header("UI элементы")]
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI chanceText;
     public TextMeshProUGUI statusText;
-
     public Button sendButton;
+    public Image cardBackground; // фон карточки для подсветки
 
+    public Action OnCardClicked;
+    
     private UnitInstance unit;
-
+    private bool isSelected  = false;
+    
     public void Setup(UnitInstance unitInstance)
     {
         unit = unitInstance;
-
-        // Подписываемся — карточка обновится когда изменятся stats
         unit.OnStatsChanged += RefreshCard;
-
         RefreshCard();
-        sendButton.onClick.AddListener(OnSendClicked);
+
+        // Если есть кнопка отправки — старый режим
+        if (sendButton != null)
+            sendButton.onClick.AddListener(OnSendClicked);
+
+        // Клик по всей карточке — новый режим выбора
+        Button cardButton = GetComponent<Button>();
+        if (cardButton != null)
+            cardButton.onClick.AddListener(() => OnCardClicked?.Invoke());
     }
     
-    void OnDestroy()
+    public void SetSelected(bool selected)
     {
-        if (unit != null)
-            unit.OnStatsChanged -= RefreshCard;
+        isSelected = selected;
+
+        if (cardBackground != null)
+        {
+            // Золотой если выбран, тёмный если нет
+            cardBackground.color = selected
+                ? new Color(0.94f, 0.65f, 0f, 0.4f)
+                : new Color(0.1f, 0.1f, 0.1f, 0.8f);
+        }
     }
 
     void RefreshCard()
     {
+        if (unit == null) return;
+
         nameText.text = unit.unitName;
 
-        // Статус
         if (unit.isFatigued)
             statusText.text = $"Устал ({unit.fatigueTurnsLeft})";
         else if (unit.currentMorale <= 0)
@@ -41,7 +59,6 @@ public class UnitCardUI : MonoBehaviour
         else
             statusText.text = $"Мораль: {unit.currentMorale}";
 
-        // Шанс
         int chance = ExpeditionManager.Instance.CalcSuccessChance(unit);
         chanceText.text = $"{chance}%";
 
@@ -49,8 +66,14 @@ public class UnitCardUI : MonoBehaviour
         else if (chance >= 40) chanceText.color = Color.yellow;
         else chanceText.color = Color.red;
 
-        // Блокируем кнопку если нельзя идти
-        sendButton.interactable = unit.CanGoOnExpedition();
+        if (sendButton != null)
+            sendButton.interactable = unit.CanGoOnExpedition();
+    }
+
+    void OnDestroy()
+    {
+        if (unit != null)
+            unit.OnStatsChanged -= RefreshCard;
     }
 
     void OnSendClicked()
