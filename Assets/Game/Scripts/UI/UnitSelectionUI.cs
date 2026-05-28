@@ -16,20 +16,37 @@ public class UnitSelectionUI : MonoBehaviour
 
     void Start()
     {
-        SpawnUnitCards();
         startExpeditionButton.onClick.AddListener(OnStartExpedition);
-        startExpeditionButton.interactable = false; // нельзя начать без отряда
+        startExpeditionButton.interactable = false;
+
+        // Подписываемся — карточки появятся когда юниты будут созданы
+        RosterManager.Instance.OnRosterChanged += SpawnUnitCards;
+    
+        // На случай если юниты уже созданы
+        if (RosterManager.Instance.GetUnits().Count > 0)
+            SpawnUnitCards();
+    }
+
+    void OnDestroy()
+    {
+        RosterManager.Instance.OnRosterChanged -= SpawnUnitCards;
     }
 
     void SpawnUnitCards()
     {
-        // Создаём карточки для всех доступных юнитов
+        // Очищаем старые карточки перед пересозданием
+        foreach (Transform child in unitsContainer)
+            Destroy(child.gameObject);
+        spawnedCards.Clear();
+        selectedUnits.Clear();
+
+        Debug.Log($"Юнитов в ростере: {RosterManager.Instance.GetUnits().Count}");
+
         foreach (UnitInstance unit in RosterManager.Instance.GetUnits())
         {
             UnitCardUI card = Instantiate(cardPrefab, unitsContainer);
+            Debug.Log($"Карточка создана: {card.name}, родитель: {card.transform.parent?.name}");
             card.Setup(unit);
-
-            // Передаём колбэк — карточка сообщит когда её выбрали
             card.OnCardClicked = () => OnUnitSelected(unit, card);
             spawnedCards.Add(card);
         }
