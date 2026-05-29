@@ -55,7 +55,11 @@ public class ExpeditionScreenUI : MonoBehaviour
         resultPanel.SetActive(false);
 
         ExpeditionNode node = ExpeditionManager.Instance.GetCurrentNode();
-        if (node == null) return;
+        if (node == null)
+        {
+            Debug.LogError("Нет текущего узла — экспедиция не началась?");
+            return;
+        }
 
         EventData e = node.eventData;
 
