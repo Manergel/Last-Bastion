@@ -40,12 +40,12 @@ public class UnitSelectionUI : MonoBehaviour
         spawnedCards.Clear();
         selectedUnits.Clear();
 
-        Debug.Log($"Юнитов в ростере: {RosterManager.Instance.GetUnits().Count}");
+        //Debug.Log($"Юнитов в ростере: {RosterManager.Instance.GetUnits().Count}");
 
         foreach (UnitInstance unit in RosterManager.Instance.GetUnits())
         {
             UnitCardUI card = Instantiate(cardPrefab, unitsContainer);
-            Debug.Log($"Карточка создана: {card.name}, родитель: {card.transform.parent?.name}");
+            //Debug.Log($"Карточка создана: {card.name}, родитель: {card.transform.parent?.name}");
             card.Setup(unit);
             card.OnCardClicked = () => OnUnitSelected(unit, card);
             spawnedCards.Add(card);

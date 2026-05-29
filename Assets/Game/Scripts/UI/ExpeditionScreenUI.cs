@@ -6,7 +6,7 @@ public class ExpeditionScreenUI : MonoBehaviour
 {
     public static ExpeditionScreenUI Instance { get; private set; }
 
-    [Header("Панели внутри экспедиции")]
+    [Header("Panels inside expedition")]
     public GameObject nodePanel;        // выбор действия
     public GameObject extractionPanel;  // уйти / продолжить
     public GameObject resultPanel;      // итог экспедиции
@@ -43,6 +43,12 @@ public class ExpeditionScreenUI : MonoBehaviour
 
     void OnEnable()
     {
+        // Откладываем до следующего кадра — все Awake уже отработали
+        StartCoroutine(ShowAfterFrame());
+    }
+    System.Collections.IEnumerator ShowAfterFrame()
+    {
+        yield return null; // ждём один кадр
         ShowNodePanel();
     }
 
