@@ -43,8 +43,11 @@ public class ExpeditionScreenUI : MonoBehaviour
 
     void OnEnable()
     {
-        // Откладываем до следующего кадра — все Awake уже отработали
-        StartCoroutine(ShowAfterFrame());
+        // Если экспедиция не началась — ничего не делаем
+        if (ExpeditionManager.Instance == null) return;
+        if (ExpeditionManager.Instance.GetCurrentNode() == null) return;
+    
+        ShowNodePanel();
     }
     System.Collections.IEnumerator ShowAfterFrame()
     {
@@ -63,12 +66,13 @@ public class ExpeditionScreenUI : MonoBehaviour
         ExpeditionNode node = ExpeditionManager.Instance.GetCurrentNode();
         if (node == null)
         {
-            Debug.LogError("Нет текущего узла — экспедиция не началась?");
+            Debug.LogError("Нет текущего узла!");
             return;
         }
 
-        EventData e = node.eventData;
+        Debug.Log($"Показываем узел: {node.eventData.eventTitle}");
 
+        EventData e = node.eventData;
         nodeCounterText.text = $"Узел {ExpeditionManager.Instance.CurrentNodeIndex + 1} из {ExpeditionManager.Instance.TotalNodes}";
         eventTitleText.text = e.eventTitle;
         eventDescriptionText.text = e.eventDescription;

@@ -33,7 +33,6 @@ public class ExpeditionManager : MonoBehaviour
         currentNodeIndex = 0;
         nodes.Clear();
 
-        // Создаём 3 узла из случайных событий
         for (int i = 0; i < 3; i++)
         {
             EventData randomEvent = availableEvents[Random.Range(0, availableEvents.Length)];
@@ -41,6 +40,7 @@ public class ExpeditionManager : MonoBehaviour
             node.eventData = randomEvent;
             node.isLastNode = (i == 2);
             nodes.Add(node);
+            Debug.Log($"Узел {i} добавлен: {randomEvent.eventTitle}"); // ← добавили
         }
 
         Debug.Log($"Экспедиция началась. Узлов: {nodes.Count}");
