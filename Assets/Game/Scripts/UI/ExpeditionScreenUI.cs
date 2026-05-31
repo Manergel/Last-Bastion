@@ -137,10 +137,14 @@ public class ExpeditionScreenUI : MonoBehaviour
         foreach (UnitInstance unit in ExpeditionManager.Instance.currentSquad)
         {
             string s = unit.isFatigued ? "устал" :
-                       unit.currentMorale < 30 ? "сломлен" : "в порядке";
+                unit.currentMorale < 30 ? "сломлен" : "в порядке";
             status += $"{unit.unitName}: {s}\n";
         }
         squadStatusText.text = status;
+
+        // Текст кнопок
+        retreatButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Уйти с добычей";
+        continueButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Рискнуть дальше →";
 
         retreatButton.onClick.RemoveAllListeners();
         continueButton.onClick.RemoveAllListeners();
@@ -177,6 +181,8 @@ public class ExpeditionScreenUI : MonoBehaviour
         if (lastResult.deadUnit != null)
             resultDescText.text += $"\n\n{lastResult.deadUnit.unitName} погиб навсегда.";
 
+        returnButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "Вернуться на базу";
+        
         returnButton.onClick.RemoveAllListeners();
         returnButton.onClick.AddListener(OnReturnToBase);
     }
