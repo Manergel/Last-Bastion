@@ -16,7 +16,6 @@ public class HireSystem : MonoBehaviour
             return null;
         }
 
-        // С таверной — выбираем из расширенного пула
         string[] pool = BuildingSystem.Instance != null &&
                         BuildingSystem.Instance.IsBuilt(BuildingType.Tavern)
             ? extraNames : baseNames;
@@ -24,9 +23,14 @@ public class HireSystem : MonoBehaviour
         GameObject go = new GameObject();
         UnitInstance unit = go.AddComponent<UnitInstance>();
         unit.unitName = pool[Random.Range(0, pool.Length)];
+    
+        // Случайный класс при найме
+        UnitClass[] classes = (UnitClass[])System.Enum.GetValues(typeof(UnitClass));
+        unit.unitClass = classes[Random.Range(0, classes.Length)];
+    
+        Debug.Log($"Нанят: {unit.unitName} [{unit.ClassName}] за {HIRE_COST} золота.");
 
         RosterManager.Instance.AddUnit(unit);
-        Debug.Log($"Нанят: {unit.unitName} за {HIRE_COST} золота.");
         return unit;
     }
 }

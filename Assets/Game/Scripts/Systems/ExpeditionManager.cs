@@ -62,6 +62,18 @@ public class ExpeditionManager : MonoBehaviour
         // Применяем последствия
         if (result.goldEarned > 0)
             ResourceManager.Instance.AddGold(result.goldEarned);
+        
+        // После разрешения узла — Жрец восстанавливает мораль
+        foreach (UnitInstance unit in currentSquad)
+        {
+            if (unit.unitClass == UnitClass.Priest)
+            {
+                foreach (UnitInstance ally in currentSquad)
+                    ally.TakeMoraleDamage(-15); // отрицательный = восстановление
+                Debug.Log($"{unit.unitName} восстановил мораль отряда.");
+                break; // один жрец за раз
+            }
+        }
 
         if (result.deadUnit != null)
         {

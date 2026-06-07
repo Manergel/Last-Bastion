@@ -51,13 +51,14 @@ public class UnitCardUI : MonoBehaviour
         if (unit == null) return;
 
         nameText.text = unit.unitName;
+        nameText.text = $"{unit.unitName} [{unit.ClassName}]";
 
         if (unit.isFatigued)
             statusText.text = $"Устал ({unit.fatigueTurnsLeft})";
         else if (unit.currentMorale <= 0)
             statusText.text = "Сломлен";
         else
-            statusText.text = $"Мораль: {unit.currentMorale}";
+            statusText.text = $"{unit.ClassAbility} · Мораль: {unit.currentMorale}";
 
         int chance = ExpeditionManager.Instance.CalcSuccessChance(unit);
         chanceText.text = $"{chance}%";

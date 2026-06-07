@@ -4,7 +4,7 @@ public class UnitInstance : MonoBehaviour
 {
     public string unitName;
     public bool isDead = false;
-
+    public UnitClass unitClass;
     // Мораль 0-100, усталость в ходах
     public int currentMorale = 100;
     public bool isFatigued = false;
@@ -68,4 +68,24 @@ public class UnitInstance : MonoBehaviour
         }
         return true;
     }
+    
+    // Имя класса для UI
+    public string ClassName => unitClass switch
+    {
+        UnitClass.Knight  => "Рыцарь",
+        UnitClass.Scout   => "Разведчик",
+        UnitClass.Priest  => "Жрец",
+        UnitClass.Hunter  => "Охотник",
+        _ => "Неизвестно"
+    };
+
+    // Описание способности для UI
+    public string ClassAbility => unitClass switch
+    {
+        UnitClass.Knight  => "+25% в бою",
+        UnitClass.Scout   => "Видит следующий узел",
+        UnitClass.Priest  => "+15 морали после узла",
+        UnitClass.Hunter  => "+30% в малом отряде",
+        _ => ""
+    };
 }
